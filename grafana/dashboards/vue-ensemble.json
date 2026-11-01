@@ -1,0 +1,43 @@
+{
+  "title": "Vue d'ensemble",
+  "uid": "vue-ensemble",
+  "tags": ["supervision"],
+  "timezone": "browser",
+  "panels": [
+    {
+      "id": 1,
+      "title": "Instances actives",
+      "type": "stat",
+      "datasource": {"type": "prometheus", "uid": "prometheus-principal"},
+      "targets": [{"expr": "sum(up)", "legendFormat": "instances"}]
+    },
+    {
+      "id": 2,
+      "title": "Utilisation CPU (%)",
+      "type": "timeseries",
+      "datasource": {"type": "prometheus", "uid": "prometheus-principal"},
+      "targets": [{"expr": "100 - (avg by (instance) (rate(node_cpu_seconds_total{mode=\"idle\"}[5m])) * 100)", "legendFormat": "{{instance}}"}]
+    },
+    {
+      "id": 3,
+      "title": "Memoire utilisee (%)",
+      "type": "timeseries",
+      "datasource": {"type": "prometheus", "uid": "prometheus-principal"},
+      "targets": [{"expr": "(1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100", "legendFormat": "{{instance}}"}]
+    },
+    {
+      "id": 4,
+      "title": "Requetes par seconde (appli demo)",
+      "type": "timeseries",
+      "datasource": {"type": "prometheus", "uid": "prometheus-principal"},
+      "targets": [{"expr": "sum(rate(demo_requetes_total[5m]))", "legendFormat": "requetes/s"}]
+    },
+    {
+      "id": 5,
+      "title": "Taux d'erreur (appli demo)",
+      "type": "stat",
+      "datasource": {"type": "prometheus", "uid": "prometheus-principal"},
+      "targets": [{"expr": "sum(rate(demo_erreurs_total[5m])) / sum(rate(demo_requetes_total[5m]))", "legendFormat": "taux d'erreur"}]
+    }
+  ]
+}

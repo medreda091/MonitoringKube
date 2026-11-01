@@ -1,0 +1,19 @@
+# Fournisseur de tableaux de bord : Grafana lit les fichiers JSON montés
+# dans /var/lib/grafana/dashboards (voir dashboards-configmap.yaml).
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboards-provider
+  namespace: supervision
+data:
+  dashboards.yml: |
+    apiVersion: 1
+    providers:
+      - name: tableaux-de-bord
+        folder: Supervision
+        type: file
+        disableDeletion: false
+        updateIntervalSeconds: 30
+        allowUiUpdates: true
+        options:
+          path: /var/lib/grafana/dashboards

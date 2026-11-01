@@ -1,0 +1,17 @@
+# Même source de données que la version locale, montée dans Grafana.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-datasources
+  namespace: supervision
+data:
+  prometheus.yml: |
+    apiVersion: 1
+    datasources:
+      - name: Prometheus
+        type: prometheus
+        uid: prometheus-principal
+        access: proxy
+        url: http://prometheus:9090
+        isDefault: true
+        editable: true

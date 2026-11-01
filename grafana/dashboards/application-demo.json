@@ -1,0 +1,36 @@
+{
+  "title": "Application de demonstration",
+  "uid": "application-demo",
+  "tags": ["supervision", "demo"],
+  "timezone": "browser",
+  "panels": [
+    {
+      "id": 1,
+      "title": "Requetes par seconde et par route",
+      "type": "timeseries",
+      "datasource": {"type": "prometheus", "uid": "prometheus-principal"},
+      "targets": [{"expr": "sum by (route) (rate(demo_requetes_total[5m]))", "legendFormat": "{{route}}"}]
+    },
+    {
+      "id": 2,
+      "title": "Erreurs par route",
+      "type": "timeseries",
+      "datasource": {"type": "prometheus", "uid": "prometheus-principal"},
+      "targets": [{"expr": "sum by (route) (rate(demo_erreurs_total[5m]))", "legendFormat": "{{route}}"}]
+    },
+    {
+      "id": 3,
+      "title": "Duree de fonctionnement (secondes)",
+      "type": "stat",
+      "datasource": {"type": "prometheus", "uid": "prometheus-principal"},
+      "targets": [{"expr": "demo_duree_secondes", "legendFormat": "uptime"}]
+    },
+    {
+      "id": 4,
+      "title": "Disponibilite de l'application",
+      "type": "stat",
+      "datasource": {"type": "prometheus", "uid": "prometheus-principal"},
+      "targets": [{"expr": "up{job=\"demo-app\"}", "legendFormat": "up"}]
+    }
+  ]
+}

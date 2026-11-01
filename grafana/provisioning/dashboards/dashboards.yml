@@ -1,0 +1,11 @@
+# Chaque tableau de bord du dossier dashboards/ est chargé au démarrage.
+apiVersion: 1
+providers:
+  - name: tableaux-de-bord
+    folder: Supervision
+    type: file
+    disableDeletion: false
+    updateIntervalSeconds: 30
+    allowUiUpdates: true
+    options:
+      path: /var/lib/grafana/dashboards

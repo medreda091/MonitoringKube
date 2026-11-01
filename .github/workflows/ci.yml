@@ -1,0 +1,23 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  validation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Installer les dépendances de test
+        run: pip install pytest pyyaml
+      - name: Vérifier que la ConfigMap générée est à jour
+        run: |
+          python3 scripts/generer_configmap.py
+          git diff --exit-code -- k8s/grafana/dashboards-configmap.yaml
+      - name: Lancer les tests
+        run: python3 -m pytest tests/ -q

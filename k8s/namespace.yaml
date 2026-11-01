@@ -1,0 +1,7 @@
+# Espace de noms dédié à toute la stack de supervision.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: supervision
+  labels:
+    usage: supervision

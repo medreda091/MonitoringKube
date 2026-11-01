@@ -1,0 +1,47 @@
+# Règles d'enregistrement et d'alerte partagées entre le local et Kubernetes.
+groups:
+  - name: demo-app
+    rules:
+      # Débit de requêtes de l'application de démonstration, agrégé par job.
+      - record: job:demo_requetes:rate5m
+        expr: sum by (job) (rate(demo_requetes_total[5m]))
+      # Part des requêtes en erreur sur les 5 dernières minutes.
+      - record: job:demo_erreurs:ratio5m
+        expr: |
+          sum by (job) (rate(demo_erreurs_total[5m]))
+          /
+          sum by (job) (rate(demo_requetes_total[5m]))
+      - alert: InstanceIndisponible
+        expr: up == 0
+        for: 2m
+        labels:
+          severity: critique
+        annotations:
+          summary: "La cible {{ $labels.job }} ne répond plus"
+          description: "Aucune métrique reçue depuis {{ $labels.instance }} depuis plus de 2 minutes."
+      - alert: TauxErreurEleve
+        expr: job:demo_erreurs:ratio5m > 0.05
+        for: 5m
+        labels:
+          severity: avertissement
+        annotations:
+          summary: "Taux d'erreur élevé sur {{ $labels.job }}"
+          description: "Plus de 5 % des requêtes sont en erreur depuis 5 minutes."
+  - name: noeuds
+    rules:
+      - alert: MemoireElevee
+        expr: (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100 > 85
+        for: 10m
+        labels:
+          severity: avertissement
+        annotations:
+          summary: "Mémoire élevée sur {{ $labels.instance }}"
+          description: "Plus de 85 % de la mémoire est utilisée depuis 10 minutes."
+      - alert: CpuEleve
+        expr: 100 - (avg by (instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 80
+        for: 10m
+        labels:
+          severity: avertissement
+        annotations:
+          summary: "CPU élevé sur {{ $labels.instance }}"
+          description: "Plus de 80 % du CPU est utilisé depuis 10 minutes."
